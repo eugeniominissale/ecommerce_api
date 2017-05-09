@@ -5,16 +5,16 @@ import datetime
 
 from passlib.hash import pbkdf2_sha256
 from peewee import DateTimeField, TextField, CharField, BooleanField
-from peewee import SqliteDatabase, DecimalField
+from peewee import DecimalField
 from peewee import UUIDField, ForeignKeyField, IntegerField
 from playhouse.signals import Model, post_delete, pre_delete
+from playhouse.sqlite_ext import SqliteExtDatabase, FTSModel
 from uuid import uuid4
 
 from exceptions import InsufficientAvailabilityException
 from utils import remove_image
 
-
-database = SqliteDatabase('database.db')
+database = SqliteExtDatabase('database.db', threadlocals=True)
 
 
 class BaseModel(Model):
@@ -71,6 +71,11 @@ def on_delete_item_handler(model_class, instance):
         Item.uuid == instance.uuid)
     for pic in pictures:
         pic.delete_instance()
+
+
+class ItemIndex(FTSModel):
+    name = CharField()
+    description = TextField()
 
 
 class Picture(BaseModel):
@@ -406,8 +411,10 @@ class OrderItem(BaseModel):
 # Check if the table exists in the database; if not create it.
 # TODO: Use database migration
 
+
 User.create_table(fail_silently=True)
 Item.create_table(fail_silently=True)
+ItemIndex.create_table(fail_silently=True)
 Order.create_table(fail_silently=True)
 OrderItem.create_table(fail_silently=True)
 Picture.create_table(fail_silently=True)
