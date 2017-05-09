@@ -4,7 +4,6 @@ Test case for setup and teardown methods
 
 from app import app
 from models import Address, Item, ItemIndex, Order, OrderItem, Picture, User
-from peewee import SqliteDatabase
 from playhouse.sqlite_ext import SqliteExtDatabase
 
 TABLES = [Address, Item, ItemIndex, Order, OrderItem, Picture, User]
