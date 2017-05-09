@@ -74,7 +74,7 @@ def on_delete_item_handler(model_class, instance):
 
 
 class ItemIndex(FTSModel):
-    item_id = UUIDField(unique=True)
+    uuid = UUIDField(unique=True)
     name = CharField()
     description = TextField()
 
