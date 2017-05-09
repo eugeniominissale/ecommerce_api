@@ -1,6 +1,6 @@
 from models import Item, ItemIndex
 from tests.test_case import TestCase
-from http.client import OK, BAD_REQUEST
+from http.client import OK, BAD_REQUEST, NOT_FOUND
 import json
 
 ITEM1 = {
@@ -43,7 +43,22 @@ class TestItemsSearch(TestCase):
         items = json.loads(resp.data)
 
         assert resp.status_code == BAD_REQUEST
-        assert itetms is None
+        assert items is None
+
+    def test_get_items_search__not_found(self):
+        item1 = Item.create(**ITEM1)
+
+        ItemIndex.create(
+            uuid=item1.uuid,
+            name=item1.name,
+            description=item1.description)
+
+        query = "GIOVANNI"
+        resp = self.app.get('/items/db', query_string=query)
+        items = json.loads(resp.data)
+
+        assert resp.status_code == NOT_FOUND
+        assert items is None
 
     def test_get_items_search__success(self):
         item1 = Item.create(**ITEM1)
