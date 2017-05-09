@@ -9,7 +9,7 @@ from flask import request
 from flask_restful import Resource
 import http.client as client
 
-from models import Item
+from models import Item, ItemIndex
 from utils import check_required_fields
 
 
@@ -40,6 +40,11 @@ class ItemsHandler(Resource):
             description=request_data['description'],
             availability=int(request_data['availability']))
         item = obj.json()
+
+        ItemIndex.create(
+            item_id=obj.item_id,
+            name=obj.name,
+            description=obj.description)
 
         return item, client.CREATED
 
