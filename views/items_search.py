@@ -8,16 +8,18 @@ class ItemsSearchHandler(Resource):
 
     def get(self):
 
-        query = str(request.args[0])
+        query = request.query_string.decode()
 
         if not query:
-            return BAD_REQUEST
+            return None, BAD_REQUEST
 
         res = (Item.select()
                .join(
                ItemIndex,
-               on=(Item.item_id == ItemIndex.item_id))
+               on=(Item.uuid == ItemIndex.uuid))
                .where(ItemIndex.match(query))
                .order_by(ItemIndex.bm25()))
 
-        return list(res), OK
+        if not res:
+            return None, NOT_FOUND
+        return [o.json() for o in res], OK
