@@ -8,7 +8,7 @@ import uuid
 
 import http.client as client
 
-from models import Item, Picture
+from models import Item, ItemIndex, Picture
 from tests.test_case import TestCase
 from tests import test_utils
 import utils
@@ -142,6 +142,12 @@ class TestItems(TestCase):
 
     def test_patch_change1item__success(self):
         item = Item.create(**TEST_ITEM)
+
+        ItemIndex.create(
+            uuid=item.uuid,
+            name=item.name,
+            description=item.description)
+
         resp = self.app.patch('/items/{item_uuid}'.format(item_uuid=item.uuid),
                               data=json.dumps({'name': 'new-name'}),
                               content_type='application/json')
@@ -156,6 +162,12 @@ class TestItems(TestCase):
 
     def test_patch_allitems_success(self):
         item = Item.create(**TEST_ITEM)
+
+        ItemIndex.create(
+            uuid=item.uuid,
+            name=item.name,
+            description=item.description)
+
         resp = self.app.patch('/items/{item_uuid}'.format(item_uuid=item.uuid),
                               data=json.dumps(
                                   {'name': 'new-name', 'price': 40.20,

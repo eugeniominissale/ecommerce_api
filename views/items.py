@@ -42,7 +42,7 @@ class ItemsHandler(Resource):
         item = obj.json()
 
         ItemIndex.create(
-            uuid=obj.item_id,
+            uuid=obj.uuid,
             name=obj.name,
             description=obj.description)
 
@@ -66,6 +66,8 @@ class ItemHandler(Resource):
         except Item.DoesNotExist:
             return None, client.NOT_FOUND
 
+        item_index = ItemIndex.get(ItemIndex.uuid == obj.uuid)
+
         request_data = request.get_json(force=True)
         name = request_data.get('name')
         price = request_data.get('price')
@@ -74,17 +76,20 @@ class ItemHandler(Resource):
 
         if name and name != obj.name:
             obj.name = request_data['name']
+            item_index.name = request_data['name']
 
         if price and price != obj.price:
             obj.price = request_data['price']
 
         if description and description != obj.description:
             obj.description = request_data['description']
+            item_index.description = request_data['description']
 
         if availability and availability != obj.availability:
             obj.availability = request_data['availability']
 
         obj.save()
+        item_index.save()
 
         return obj.json(), client.OK
 
