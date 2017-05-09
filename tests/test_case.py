@@ -3,17 +3,18 @@ Test case for setup and teardown methods
 """
 
 from app import app
-from models import Address, Item, Order, OrderItem, Picture, User
+from models import Address, Item, ItemIndex, Order, OrderItem, Picture, User
 from peewee import SqliteDatabase
+from playhouse.sqlite_ext import SqliteExtDatabase
 
-TABLES = [Address, Item, Order, OrderItem, Picture, User]
+TABLES = [Address, Item, ItemIndex, Order, OrderItem, Picture, User]
 
 
 class TestCase:
     """
     Created TestCase to avoid duplicated code in the other tests
     """
-    TEST_DB = SqliteDatabase(':memory:')
+    TEST_DB = SqliteExtDatabase(':memory:')
 
     @classmethod
     def setup_class(cls):
