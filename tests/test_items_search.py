@@ -28,4 +28,15 @@ class TestItemsSearch(TestCase):
     def test_get_items_search__success(self):
         item1 = Item.create(**ITEM1)
         item2 = Item.create(**ITEM2)
-        import pdb; pdb.set_trace()
+
+        ItemIndex.create(
+            item_id=item1.item_id,
+            name=item1.name,
+            description=item1.description)
+        ItemIndex.create(
+            item_id=item2.item_id,
+            name=item2.name,
+            description=item2.description)
+
+        query = "mario"
+        resp = self.app.get('/items/db', data=query)
