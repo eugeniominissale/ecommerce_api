@@ -42,7 +42,7 @@ class ItemsHandler(Resource):
         item = obj.json()
 
         ItemIndex.create(
-            item_id=obj.item_id,
+            uuid=obj.item_id,
             name=obj.name,
             description=obj.description)
 
