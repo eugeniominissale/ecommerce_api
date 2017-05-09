@@ -74,8 +74,12 @@ def on_delete_item_handler(model_class, instance):
 
 
 class ItemIndex(FTSModel):
+    item_id = UUIDField(unique=True)
     name = CharField()
     description = TextField()
+
+    class Meta:
+        database = database
 
 
 class Picture(BaseModel):
@@ -410,7 +414,6 @@ class OrderItem(BaseModel):
 
 # Check if the table exists in the database; if not create it.
 # TODO: Use database migration
-
 
 User.create_table(fail_silently=True)
 Item.create_table(fail_silently=True)
