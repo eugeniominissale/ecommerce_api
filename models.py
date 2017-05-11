@@ -8,7 +8,7 @@ from peewee import DateTimeField, TextField, CharField, BooleanField
 from peewee import DecimalField
 from peewee import UUIDField, ForeignKeyField, IntegerField
 from playhouse.signals import Model, post_delete, pre_delete
-from playhouse.sqlite_ext import SqliteExtDatabase, FTSModel
+from playhouse.sqlite_ext import SqliteExtDatabase, FTSModel, SearchField
 from uuid import uuid4
 
 from exceptions import InsufficientAvailabilityException
@@ -74,12 +74,12 @@ def on_delete_item_handler(model_class, instance):
 
 
 class ItemIndex(FTSModel):
-    uuid = UUIDField(unique=True)
-    name = CharField()
-    description = TextField()
+    name = SearchField()
+    description = SearchField()
 
     class Meta:
         database = database
+        extension_options = {'tokenize': 'porter'}
 
 
 class Picture(BaseModel):
@@ -418,6 +418,8 @@ class OrderItem(BaseModel):
 User.create_table(fail_silently=True)
 Item.create_table(fail_silently=True)
 ItemIndex.create_table(fail_silently=True)
+ItemIndex.rebuild()
+ItemIndex.optimize()
 Order.create_table(fail_silently=True)
 OrderItem.create_table(fail_silently=True)
 Picture.create_table(fail_silently=True)
